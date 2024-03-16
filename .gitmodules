@@ -1,0 +1,6 @@
+[submodule "FYP_Web"]
+	path = FYP_Web
+	url = https://github.com/ken20020209/FYP_Web.git
+[submodule "FYP_ROS_Server"]
+	path = FYP_ROS_Server
+	url = https://github.com/ken20020209/FYP_ROS_Server.git

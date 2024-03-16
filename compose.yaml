@@ -1,0 +1,14 @@
+services:
+  fyp_ros_server:
+    build: 
+      context: ./FYP_ROS_Server
+      dockerfile: docker/Dockerfile
+    network_mode: "host"
+    volumes:
+      - ./data:/data
+  fyp_web:
+    build: 
+      context: ./FYP_Web/demoDogControl
+      dockerfile: docker/Dockerfile
+    network_mode: "host"
+    
