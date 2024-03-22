@@ -1,0 +1,22 @@
+services:
+  fyp_ros_server:
+    image: ken20020209/fyp_ros_server:TestWithoutRobot
+    # network_mode: "host"
+    ports:
+      - 9090-9120:9090-9120
+      - 6096-6126:6096-6126
+  fyp_robot1:
+    image: ken20020209/fyp_robot:TestWithoutRobot
+    # network_mode: "host"
+    environment:
+      - name=dog1
+  fyp_robot2:
+    image: ken20020209/fyp_robot:TestWithoutRobot
+    # network_mode: "host"
+    environment:
+      - name=dog2
+  fyp_robot3:
+    image: ken20020209/fyp_robot:TestWithoutRobot
+    # network_mode: "host"
+    environment:
+      - name=dog3
