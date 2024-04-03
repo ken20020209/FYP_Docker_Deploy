@@ -1,14 +1,20 @@
 services:
-  fyp_ros_server:
-    build: 
-      context: ./FYP_ROS_Server
-      dockerfile: docker/Dockerfile
-    network_mode: "host"
-    volumes:
-      - ./data:/data
+  # fyp_ros_server:
+  #   image: ken20020209/fyp_ros_server:latest
+  #   network_mode: "host"
+  #   volumes:
+  #     - ./data:/data
   fyp_web:
-    build: 
-      context: ./FYP_Web/demoDogControl
-      dockerfile: docker/Dockerfile
-    network_mode: "host"
-    
+    image: ken20020209/fyp_web:latest
+    ports:
+      - 80:80
+  fyp_api_database:
+    image: ken20020209/fyp_api_database:latest
+    environment:
+      - HOST_URL=http://webserver.viewdns.net:5000
+      - DATA_STORAGE_PATH = data
+      - SQLITE3_DATABASE_PATH = '../data/database/database.db'
+    ports:
+      - 5000:5000
+    volumes:
+      - ./data:/flask_service/data
