@@ -1,13 +1,39 @@
 services:
-  # fyp_ros_server:
-  #   image: ken20020209/fyp_ros_server:latest
-  #   network_mode: "host"
-  #   volumes:
-  #     - ./data:/data
+  # fyp_robot1: # for localtest
+  #   image: ken20020209/fyp_robot:TestWithoutRobot
+  #   # entrypoint: ["python3", "/fyp/startConnectorWithDiscoveryServery.py"]
+  #   environment:
+  #     - name=dog_s2_0
+  #   depends_on:
+  #     - fyp_ros_server
+  fyp_ros_server:
+    image: ken20020209/fyp_ros_server:latest
+    network_mode: host # bug in docker only work in host mode
+    environment:
+      - RECORD_STORAGE_PATH=/data/map
+      - MAP_STORAGE_PATH=/data/record
+      - DISCOVERY_SERVER=discoveryserver.ddns.net
+      - CAMERA_URL=http://webserver.viewdns.net:8000/effect
+      - API_DATABASE_URL=http://webserver.viewdns.net:5000
+      - API_DATABASE_USERNAME=admin
+      - API_DATABASE_PASSWORD=12345678
+      # - discover_server=127.0.0.1 # for local test
+    volumes:
+      - ./data/rosServer:/data
+    ports:
+      - 9090-9120:9090-9120 #websocket
+      - 6096-6126:6096-6126 #vnc
+      - 11811:11811 #discovery server
+      - 11827-11847:11827-11847 #discovery server
+    depends_on:
+      - fyp_api_database
+
   fyp_web:
     image: ken20020209/fyp_web:latest
     ports:
       - 80:80
+    depends_on:
+      - fyp_api_database
   fyp_api_database:
     image: ken20020209/fyp_api_database:latest
     environment:
@@ -18,3 +44,25 @@ services:
       - 5000:5000
     volumes:
       - ./data:/flask_service/data
+      
+  fyp_ai_effect_nginx:
+    image: nginx
+    ports:
+      - "8000:80"
+    volumes:
+      - ./fyp_ai_effect_nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - fyp_effect
+
+  fyp_effect:
+    image: ken20020209/fyp_ai_effect:latest
+    expose:
+      - 8000
+    deploy:
+        resources:
+            reservations:
+                devices:
+                  - driver: "nvidia"
+                    count: "all"
+                    capabilities: ["gpu"]
+
