@@ -1,23 +1,27 @@
 services:
-  fyp_ros_server:
-    image: ken20020209/fyp_ros_server:TestWithoutRobot
-    # network_mode: "host"
-    ports:
-      - 9090-9120:9090-9120
-      - 6096-6126:6096-6126
-      # - 5900-5930:5900-5930
+  # fyp_ros_server:
+  #   image: ken20020209/fyp_ros_server:latest
+  #   # network_mode: "host"
+  #   ports:
+  #     - 9090-9120:9090-9120 #websocket
+  #     - 6096-6126:6096-6126 #vnc
+  #     - 11811:11811 #discovery server
+  #     - 11827-11847:11827-11847 #discovery server
   fyp_robot1:
     image: ken20020209/fyp_robot:TestWithoutRobot
+    # entrypoint: ["python3", "/fyp/startConnectorWithDiscoveryServery.py"]
     # network_mode: "host"
     environment:
-      - name=dog1
+      - name=dog_s2_1
   fyp_robot2:
     image: ken20020209/fyp_robot:TestWithoutRobot
+    # entrypoint: ["python3", "/fyp/startConnectorWithDiscoveryServery.py"]
     # network_mode: "host"
     environment:
-      - name=dog2
+      - name=dog_s2_2
   fyp_robot3:
     image: ken20020209/fyp_robot:TestWithoutRobot
+    # entrypoint: ["python3", "/fyp/startConnectorWithDiscoveryServery.py"]
     # network_mode: "host"
     environment:
-      - name=dog3
+      - name=dog_s2_3
