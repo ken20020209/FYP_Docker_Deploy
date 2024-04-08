@@ -13,7 +13,7 @@ services:
       - RECORD_STORAGE_PATH=/data/record
       - MAP_STORAGE_PATH=/data/map
       - DISCOVERY_SERVER=discoveryserver.ddns.net
-      - CAMERA_URL=http://webserver.viewdns.net:8000/effect
+      - CAMERA_URL=http://aieffect.ddns.net:8000/effect
       - API_DATABASE_URL=http://webserver.viewdns.net:5000
       - API_DATABASE_USERNAME=admin
       - API_DATABASE_PASSWORD=12345678
