@@ -48,7 +48,7 @@ services:
     ports:
       - 8000:8000
     deploy:
-        replicas: 1
+        replicas: 2
         resources:
             reservations:
                 generic_resources:
