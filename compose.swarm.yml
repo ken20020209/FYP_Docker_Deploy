@@ -38,7 +38,7 @@ services:
       - SQLITE3_DATABASE_PATH = '../data/database/database.db'
       - NVIDIA_VISIBLE_DEVICES = all
     ports:
-      - 5000:5000
+      - 5000:8000
     volumes:
       - ./data:/flask_service/data
       
