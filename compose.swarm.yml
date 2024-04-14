@@ -1,25 +1,63 @@
 services:
+  # fyp_proxy:
+  #   image: nginx
+  #   networks:
+  #     - outside
+  #   ports:
+  #     - 11811:11811
+  #     - 11811:11811/udp
+  #   volumes:
+  #     - ./test_nginx.conf:/etc/nginx/nginx.conf
+  fyp_ros_proxy:
+    image: ken20020209/fyp_ros_proxy:latest
+    ports:
+      - 9089:9089
+  fyp_ros_proxy_ip:
+    image: ken20020209/fyp_ros_proxy:ip
+    networks:
+      -  outside
+    deploy:
+      mode: global
   fyp_ros_server: #optional
     image: ken20020209/fyp_ros_server:latest
-    networks:
-      - outside # bug in docker only work in host mode
+    # networks:
+    #   - outside 
     environment:
       - RECORD_STORAGE_PATH=/data/record
       - MAP_STORAGE_PATH=/data/map
       - DISCOVERY_SERVER=discoveryserver.ddns.net
-      - CAMERA_URL=http://aieffect.ddns.net:8000/effect
-      - API_DATABASE_URL=http://webserver.viewdns.net:5000
+      - CAMERA_URL=http://fyp_effect:8000/effect
+      - API_DATABASE_URL=http://fyp_api_database:8000
       - API_DATABASE_USERNAME=admin
       - API_DATABASE_PASSWORD=12345678
+      - ROS_PROXY_URL=http://fyp_ros_proxy:9089 # for get port and manger ip of task
+      - ROS_PROXY_ENABLE=False
+      - ROS_PROXY_IP_URL=http://host.docker.internal:9088/api/ros/ip #for get host ip
       # - discover_server=127.0.0.1 # for local test
     volumes:
       - ./data/rosServer:/data
+    extra_hosts:
+    - "host.docker.internal:host-gateway"
+    deploy:
+      replicas: 1
     ports:
-      - mode: host
-      # - 9090-9120:9090-9120 #websocket
-      # - 6096-6126:6096-6126 #vnc
-      # - 11811:11811 #discovery server
-      # - 11827-11847:11827-11847 #discovery server
+    #   - mode: host
+    #     target: 11811
+    #     published: 11811
+    #     protocol: udp
+    # #   - mode: host
+    # #     target: 11827
+    # #     published: 11827
+    # #     protocol: udp
+      
+      - 9090-9120:9090-9120/udp #websocket
+      - 9090-9120:9090-9120 #websocket
+      - 6096-6126:6096-6126/udp #vnc
+      - 6096-6126:6096-6126 #vnc
+      - 11811:11811/udp #discovery server
+      - 11811:11811 #discovery server
+      - 11827-11847:11827-11847/udp #discovery server
+      - 11827-11847:11827-11847 #discovery server
 
     depends_on:
       - fyp_api_database
