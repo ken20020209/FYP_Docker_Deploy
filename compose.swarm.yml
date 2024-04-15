@@ -8,6 +8,15 @@ services:
   #     - 11811:11811/udp
   #   volumes:
   #     - ./test_nginx.conf:/etc/nginx/nginx.conf
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - 8080:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      placement:
+        constraints: [node.role == manager]
   fyp_ros_proxy:
     image: ken20020209/fyp_ros_proxy:latest
     ports:
@@ -18,7 +27,8 @@ services:
       -  outside
     deploy:
       mode: global
-  fyp_ros_server: #optional
+  # the fyp ros server can be scaled by the number of node
+  fyp_ros_server: #optional 
     image: ken20020209/fyp_ros_server:latest
     networks:
       - outside 
@@ -26,25 +36,28 @@ services:
       - RECORD_STORAGE_PATH=/data/record
       - MAP_STORAGE_PATH=/data/map
       - DISCOVERY_SERVER=discoveryserver.ddns.net
-      - CAMERA_URL=http://aieffect.ddns.net:8000/effect
-      - API_DATABASE_URL=http://aieffect.ddns.net:5000
+      - CAMERA_URL=http://host.docker.internal:8000/effect
+      - API_DATABASE_URL=http://host.docker.internal:5000
       - API_DATABASE_USERNAME=admin
       - API_DATABASE_PASSWORD=12345678
-      - ROS_PROXY_URL=http://fyp_ros_proxy:9089 # for get port and manger ip of task
+      - ROS_PROXY_URL=http://host.docker.internal:9089 # for get port and manger ip of task
       - ROS_PROXY_ENABLE=False
       - ROS_PROXY_IP_URL=http://host.docker.internal:9088/api/ros/ip #for get host ip
       # - discover_server=127.0.0.1 # for local test
-    volumes:
-      - ./data/rosServer:/data
+    # volumes:
+    #   - ./data/rosServer:/data
     extra_hosts:
     - "host.docker.internal:host-gateway"
     deploy:
-      replicas: 1
-    # ports:
-    #   - mode: host
-    #     target: 11811
-    #     published: 11811
-    #     protocol: udp
+      replicas: 2
+      placement:
+        max_replicas_per_node: 1
+
+    ports:
+      - mode: host
+        target: 11811
+        published: 11811
+        protocol: udp
     # #   - mode: host
     # #     target: 11827
     # #     published: 11827
@@ -91,7 +104,7 @@ services:
     ports:
       - 8000:8000
     deploy:
-        replicas: 2
+        replicas: 4
         resources:
             reservations:
                 generic_resources:
