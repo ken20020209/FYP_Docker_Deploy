@@ -20,14 +20,14 @@ services:
       mode: global
   fyp_ros_server: #optional
     image: ken20020209/fyp_ros_server:latest
-    # networks:
-    #   - outside 
+    networks:
+      - outside 
     environment:
       - RECORD_STORAGE_PATH=/data/record
       - MAP_STORAGE_PATH=/data/map
       - DISCOVERY_SERVER=discoveryserver.ddns.net
-      - CAMERA_URL=http://fyp_effect:8000/effect
-      - API_DATABASE_URL=http://fyp_api_database:8000
+      - CAMERA_URL=http://aieffect.ddns.net:8000/effect
+      - API_DATABASE_URL=http://aieffect.ddns.net:5000
       - API_DATABASE_USERNAME=admin
       - API_DATABASE_PASSWORD=12345678
       - ROS_PROXY_URL=http://fyp_ros_proxy:9089 # for get port and manger ip of task
@@ -40,7 +40,7 @@ services:
     - "host.docker.internal:host-gateway"
     deploy:
       replicas: 1
-    ports:
+    # ports:
     #   - mode: host
     #     target: 11811
     #     published: 11811
@@ -50,28 +50,33 @@ services:
     # #     published: 11827
     # #     protocol: udp
       
-      - 9090-9120:9090-9120/udp #websocket
-      - 9090-9120:9090-9120 #websocket
-      - 6096-6126:6096-6126/udp #vnc
-      - 6096-6126:6096-6126 #vnc
-      - 11811:11811/udp #discovery server
-      - 11811:11811 #discovery server
-      - 11827-11847:11827-11847/udp #discovery server
-      - 11827-11847:11827-11847 #discovery server
+      # - 9090-9120:9090-9120/udp #websocket
+      # - 9090-9120:9090-9120 #websocket
+      # - 6096-6126:6096-6126/udp #vnc
+      # - 6096-6126:6096-6126 #vnc
+      # - 11811:11811/udp #discovery server
+      # - 11811:11811 #discovery server
+      # - 11827-11847:11827-11847/udp #discovery server
+      # - 11827-11847:11827-11847 #discovery server
 
     depends_on:
       - fyp_api_database
 
   fyp_web:
-    image: ken20020209/fyp_web:latest
+    image: ken20020209/fyp_web:test
     ports:
       - 80:80
+      - 443:443
+    volumes:
+      - ./ssl/cert.pem:/etc/nginx/cert.pem
+      - ./ssl/key.key:/etc/nginx/key.key
+      - ./ssl/password.txt:/etc/nginx/password.txt
     depends_on:
       - fyp_api_database
   fyp_api_database:
     image: ken20020209/fyp_api_database:latest
     environment:
-      - HOST_URL=http://webserver.viewdns.net:5000
+      - HOST_URL=https://www.ken20020209.com
       - DATA_STORAGE_PATH = data
       - SQLITE3_DATABASE_PATH = '../data/database/database.db'
       - NVIDIA_VISIBLE_DEVICES = all
