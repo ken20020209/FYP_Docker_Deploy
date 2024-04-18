@@ -71,15 +71,27 @@ services:
     depends_on:
       - fyp_api_database
 
+  # fyp_web_test:
+  #   image: ken20020209/fyp_web:test
+  #   ports:
+  #     - 2222:80
+  #     - 1111:443
+  #   volumes:
+  #     - ./ssl/cert.pem:/etc/nginx/cert.pem
+  #     - ./ssl/key.key:/etc/nginx/key.key
+  #     - ./ssl/password.txt:/etc/nginx/password.txt
+  #   depends_on:
+  #     - fyp_api_database
+
   fyp_web:
     image: ken20020209/fyp_web:latest
     ports:
-      - 80:80
+      # - 80:80
       - 443:443
     volumes:
-      - ./ssl/cert.pem:/etc/nginx/cert.pem
-      - ./ssl/key.key:/etc/nginx/key.key
-      - ./ssl/password.txt:/etc/nginx/password.txt
+      - /2023fyp/ssl/cert.pem:/etc/nginx/cert.pem
+      - /2023fyp/ssl/key.key:/etc/nginx/key.key
+      - /2023fyp/ssl/password.txt:/etc/nginx/password.txt
     depends_on:
       - fyp_api_database
   fyp_api_database:
