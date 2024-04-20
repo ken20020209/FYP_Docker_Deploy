@@ -35,7 +35,7 @@ services:
     environment:
       - RECORD_STORAGE_PATH=/data/record
       - MAP_STORAGE_PATH=/data/map
-      - DISCOVERY_SERVER=discoveryserver.ddns.net
+      - DISCOVERY_SERVER=www.ken20020209.com
       - CAMERA_URL=http://host.docker.internal:8000/effect
       - API_DATABASE_URL=http://host.docker.internal:5000
       - API_DATABASE_USERNAME=admin
